@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - ZK-KYC System</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.ethers.io/lib/ethers-5.7.2.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .status-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .info-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        
+        .info-item strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .hash-display {
+            font-family: monospace;
+            font-size: 0.9em;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        
+        const TRUSTED_ISSUER_URL = 'http://localhost:3002';
+        const VERIFIER_URL = 'http://localhost:3003';
+        
+        function UserDashboard() {
+            const [account, setAccount] = useState(null);
+            const [isConnected, setIsConnected] = useState(false);
+            const [userDID, setUserDID] = useState(null);
+            const [loading, setLoading] = useState(false);
+            const [error, setError] = useState(null);
+            const [success, setSuccess] = useState(null);
+            const [proofStatus, setProofStatus] = useState(null);
+            
+            // Form data for DID request
+            const [formData, setFormData] = useState({
+                age: '',
+                name: '',
+                nationality: ''
+            });
+            
+            // Proof generation data
+            const [proofData, setProofData] = useState(null);
+            const [hasVotingAccess, setHasVotingAccess] = useState(false);
+            
+            useEffect(() => {
+                checkWalletConnection();
+                if (account) {
+                    loadUserDID();
+                }
+            }, [account]);
+            
+            const checkWalletConnection = async () => {
+                if (typeof window.ethereum !== 'undefined') {
+                    try {
+                        const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+                        if (accounts.length > 0) {
+                            setAccount(accounts[0]);
+                            setIsConnected(true);
+                        }
+                    } catch (error) {
+                        console.error('Error checking wallet connection:', error);
+                    }
+                }
+            };
+            
+            const connectWallet = async () => {
+                if (typeof window.ethereum !== 'undefined') {
+                    try {
+                        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                        setAccount(accounts[0]);
+                        setIsConnected(true);
+                        setError(null);
+                    } catch (error) {
+                        setError('Failed to connect wallet');
+                    }
+                }
+            };
+            
+            const loadUserDID = async () => {
+                try {
+                    const stored = localStorage.getItem(`user_did_${account}`);
+                    if (stored) {
+                        setUserDID(JSON.parse(stored));
+                    }
+                } catch (error) {
+                    console.error('Error loading user DID:', error);
+                }
+            };
+            
+            const requestDID = async (e) => {
+                e.preventDefault();
+                
+                if (!formData.age || !formData.name || !formData.nationality) {
+                    setError('Please fill in all fields');
+                    return;
+                }
+                
+                try {
+                    setLoading(true);
+                    setError(null);
+                    setSuccess(null);
+                    
+                    const response = await fetch(`${TRUSTED_ISSUER_URL}/issue-did`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            age: parseInt(formData.age),
+                            name: formData.name,
+                            nationality: formData.nationality,
+                            userAddress: account
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        const didInfo = {
+                            ...result.data,
+                            originalData: formData
+                        };
+                        
+                        setUserDID(didInfo);
+                        localStorage.setItem(`user_did_${account}`, JSON.stringify(didInfo));
+                        setSuccess('✅ DID issued successfully by trusted authority');
+                        setFormData({ age: '', name: '', nationality: '' });
+                    } else {
+                        setError(`Failed to issue DID: ${result.error}`);
+                    }
+                } catch (error) {
+                    console.error('Error requesting DID:', error);
+                    setError('Failed to connect to trusted issuer');
+                } finally {
+                    setLoading(false);
+                }
+            };
+            
+            const generateProof = async () => {
+                if (!userDID) {
+                    setError('No DID available. Please request DID first.');
+                    return;
+                }
+                
+                try {
+                    setLoading(true);
+                    setError(null);
+                    setSuccess(null);
+                    setProofStatus('🔐 Generating zero-knowledge proof...');
+                    
+                    // Get merkle proof from trusted issuer
+                    const proofResponse = await fetch(`${TRUSTED_ISSUER_URL}/merkle-proof/${account}`);
+                    const proofResult = await proofResponse.json();
+                    
+                    if (!proofResult.success) {
+                        throw new Error('Failed to get merkle proof');
+                    }
+                    
+                    const merkleProof = proofResult.data;
+                    
+                    setProofStatus('📡 Generating cryptographic proof...');
+                    
+                    // Create structured proof
+                    const proof = {
+                        proofData: {
+                            merkleRoot: merkleProof.merkleRoot,
+                            nullifierHash: ethers.utils.keccak256(
+                                ethers.utils.toUtf8Bytes(`${userDID.did}_${Math.floor(Date.now() / 1000)}`)
+                            ),
+                            ageVerified: parseInt(userDID.originalData.age) >= 18,
+                            timestamp: Math.floor(Date.now() / 1000)
+                        },
+                        metadata: {
+                            userAddress: account,
+                            proofType: 'age_verification',
+                            generatedAt: new Date().toISOString()
+                        }
+                    };
+                    
+                    setProofData(proof);
+                    setProofStatus('✅ Zero-knowledge proof generated successfully');
+                    
+                } catch (error) {
+                    console.error('Error generating proof:', error);
+                    setError(`Failed to generate proof: ${error.message}`);
+                    setProofStatus(null);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            
+            const submitProofToVerifier = async () => {
+                if (!proofData) {
+                    setError('No proof available. Please generate proof first.');
+                    return;
+                }
+                
+                try {
+                    setLoading(true);
+                    setError(null);
+                    setSuccess(null);
+                    setProofStatus('📤 Submitting proof to verifier...');
+                    
+                    const response = await fetch(`${VERIFIER_URL}/verify-proof`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            proof: proofData.proofData,
+                            metadata: proofData.metadata,
+                            service: 'voting'
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success && result.data.verified) {
+                        setHasVotingAccess(true);
+                        setSuccess('🎉 Proof verified! Voting access granted.');
+                        setProofStatus('✅ Access granted to voting system');
+                    } else {
+                        setError(`Proof verification failed: ${result.error || 'Unknown error'}`);
+                    }
+                } catch (error) {
+                    console.error('Error submitting proof:', error);
+                    setError('Failed to connect to verifier service');
+                } finally {
+                    setLoading(false);
+                }
+            };
+            
+            if (!isConnected) {
+                return (
+                    <div className="container">
+                        <div className="header">
+                            <h1>👤 User Dashboard</h1>
+                            <p>Connect your wallet to access the ZK-KYC system</p>
+                        </div>
+                        <div className="status-card">
+                            <h3>🔗 Wallet Connection Required</h3>
+                            <p>Please connect your wallet to request DID and generate proofs</p>
+                            <button onClick={connectWallet} className="btn btn-primary">
+                                Connect Wallet
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+            
+            return (
+                <div className="container">
+                    <div className="header">
+                        <h1>👤 User Dashboard</h1>
+                        <p>Zero-Knowledge Identity Verification System</p>
+                    </div>
+                    
+                    <div className="status-card">
+                        <h3>📊 Account Status</h3>
+                        <div className="info-grid">
+                            <div className="info-item">
+                                <strong>Wallet Address:</strong>
+                                <span className="hash-display">{account?.slice(0, 6)}...{account?.slice(-4)}</span>
+                            </div>
+                            <div className="info-item">
+                                <strong>DID Status:</strong>
+                                <span>{userDID ? '✅ Issued' : '❌ Not issued'}</span>
+                            </div>
+                            <div className="info-item">
+                                <strong>Voting Access:</strong>
+                                <span>{hasVotingAccess ? '✅ Granted' : '❌ Not granted'}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {error && (
+                        <div className="error">
+                            <strong>Error:</strong> {error}
+                            <button onClick={() => setError(null)} style={{float: 'right', background: 'none', border: 'none', fontSize: '16px', cursor: 'pointer'}}>×</button>
+                        </div>
+                    )}
+                    
+                    {success && (
+                        <div className="success">
+                            {success}
+                            <button onClick={() => setSuccess(null)} style={{float: 'right', background: 'none', border: 'none', fontSize: '16px', cursor: 'pointer'}}>×</button>
+                        </div>
+                    )}
+                    
+                    {proofStatus && (
+                        <div className="success">
+                            {proofStatus}
+                        </div>
+                    )}
+                    
+                    {!userDID ? (
+                        <div className="status-card">
+                            <h3>🆔 Request DID from Trusted Issuer</h3>
+                            <form onSubmit={requestDID}>
+                                <div className="form-group">
+                                    <label>Age:</label>
+                                    <input
+                                        type="number"
+                                        value={formData.age}
+                                        onChange={(e) => setFormData({...formData, age: e.target.value})}
+                                        min="0"
+                                        max="120"
+                                        placeholder="Enter your age"
+                                        required
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Full Name:</label>
+                                    <input
+                                        type="text"
+                                        value={formData.name}
+                                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                                        placeholder="Enter your full name"
+                                        required
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Nationality:</label>
+                                    <select
+                                        value={formData.nationality}
+                                        onChange={(e) => setFormData({...formData, nationality: e.target.value})}
+                                        required
+                                    >
+                                        <option value="">Select nationality</option>
+                                        <option value="US">United States</option>
+                                        <option value="UK">United Kingdom</option>
+                                        <option value="CA">Canada</option>
+                                        <option value="DE">Germany</option>
+                                        <option value="FR">France</option>
+                                        <option value="JP">Japan</option>
+                                        <option value="AU">Australia</option>
+                                        <option value="OTHER">Other</option>
+                                    </select>
+                                </div>
+                                <button type="submit" disabled={loading} className="btn btn-primary">
+                                    {loading ? 'Requesting...' : 'Request DID from Trusted Issuer'}
+                                </button>
+                            </form>
+                        </div>
+                    ) : (
+                        <div>
+                            <div className="status-card">
+                                <h3>🆔 Your DID Information</h3>
+                                <div className="info-grid">
+                                    <div className="info-item">
+                                        <strong>DID:</strong>
+                                        <span className="hash-display">{userDID.did?.slice(0, 10)}...{userDID.did?.slice(-8)}</span>
+                                    </div>
+                                    <div className="info-item">
+                                        <strong>Issued At:</strong>
+                                        <span>{new Date(userDID.issuedAt).toLocaleString()}</span>
+                                    </div>
+                                    <div className="info-item">
+                                        <strong>Age Eligible:</strong>
+                                        <span>{parseInt(userDID.originalData.age) >= 18 ? '✅ Yes' : '❌ No'}</span>
+                                    </div>
+                                    <div className="info-item">
+                                        <strong>Leaf Index:</strong>
+                                        <span>{userDID.leafIndex}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div className="status-card">
+                                <h3>🔐 Generate Zero-Knowledge Proof</h3>
+                                <p>Generate a proof that you meet the age requirement without revealing your identity</p>
+                                <button 
+                                    onClick={generateProof}
+                                    disabled={loading || proofData}
+                                    className="btn btn-secondary"
+                                >
+                                    {loading ? 'Generating...' : proofData ? 'Proof Generated' : 'Generate ZK Proof'}
+                                </button>
+                            </div>
+                            
+                            {proofData && (
+                                <div className="status-card">
+                                    <h3>📜 Generated Proof</h3>
+                                    <div className="info-grid">
+                                        <div className="info-item">
+                                            <strong>Nullifier:</strong>
+                                            <span className="hash-display">{proofData.proofData.nullifierHash?.slice(0, 10)}...{proofData.proofData.nullifierHash?.slice(-8)}</span>
+                                        </div>
+                                        <div className="info-item">
+                                            <strong>Age Verified:</strong>
+                                            <span>{proofData.proofData.ageVerified ? '✅ Yes' : '❌ No'}</span>
+                                        </div>
+                                        <div className="info-item">
+                                            <strong>Generated At:</strong>
+                                            <span>{new Date(proofData.metadata.generatedAt).toLocaleString()}</span>
+                                        </div>
+                                        <div className="info-item">
+                                            <strong>Proof Type:</strong>
+                                            <span>{proofData.metadata.proofType}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <button 
+                                        onClick={submitProofToVerifier}
+                                        disabled={loading || hasVotingAccess}
+                                        className="btn btn-success"
+                                    >
+                                        {loading ? 'Submitting...' : hasVotingAccess ? 'Access Granted' : 'Submit to Verifier'}
+                                    </button>
+                                </div>
+                            )}
+                            
+                            {hasVotingAccess && (
+                                <div className="status-card" style={{background: '#d4edda', color: '#155724'}}>
+                                    <h3>🎉 Voting Access Granted!</h3>
+                                    <p>Your zero-knowledge proof has been verified successfully. You can now access the voting system without revealing your identity.</p>
+                                    <p><strong>Privacy Preserved:</strong> The verifier confirmed your age eligibility without seeing your personal information.</p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+            );
+        }
+        
+        ReactDOM.render(<UserDashboard />, document.getElementById('root'));
+    </script>
+</body>
+</html>

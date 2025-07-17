@@ -1,0 +1,56 @@
+{
+  "name": "zkkyc-frontend",
+  "version": "1.0.0",
+  "description": "Frontend interface for ZK-KYC system",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack serve --mode development",
+    "build": "webpack --mode production",
+    "dev": "webpack serve --mode development --open"
+  },
+  "dependencies": {
+    "constants-browserify": "^1.0.0",
+    "core-js": "^3.31.0",
+    "ethers": "^5.7.2",
+    "os-browserify": "^0.3.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "styled-jsx": "^5.1.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.22.0",
+    "@babel/preset-env": "^7.22.0",
+    "@babel/preset-react": "^7.22.0",
+    "assert": "^2.0.0",
+    "babel-loader": "^9.1.0",
+    "buffer": "^6.0.3",
+    "crypto-browserify": "^3.12.0",
+    "css-loader": "^6.8.0",
+    "events": "^3.3.0",
+    "html-webpack-plugin": "^5.5.0",
+    "path-browserify": "^1.0.1",
+    "process": "^0.11.10",
+    "stream-browserify": "^3.0.0",
+    "style-loader": "^3.3.0",
+    "url": "^0.11.0",
+    "util": "^0.12.5",
+    "vm-browserify": "^1.1.2",
+    "webpack": "^5.88.0",
+    "webpack-cli": "^5.1.0",
+    "webpack-dev-server": "^4.15.0"
+  },
+  "keywords": [
+    "zk-kyc",
+    "zero-knowledge",
+    "blockchain",
+    "privacy",
+    "ethereum"
+  ],
+  "author": "",
+  "license": "MIT",
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}

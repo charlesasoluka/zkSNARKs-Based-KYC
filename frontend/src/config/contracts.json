@@ -1,0 +1,16 @@
+{
+  "network": "sepolia",
+  "chainId": "11155111",
+  "contracts": {
+    "hasher": "0x1862b393cdE4FA9B629018322a517FD72c1740fb",
+    "verifier": "0x7cAa97F4eB8708CEFB04eC8D8d54b572b90E5367",
+    "kycRegistry": "0x819799345151F021195F5DF69bFF38Fe7239Ecd4",
+    "accessController": "0x3CE91999eE4fdd91BB1dB7Cb8ec2f2781cE4a883"
+  },
+  "config": {
+    "merkleTreeHeight": 20,
+    "trustedIssuers": [
+      "0x32Ee3fBaF775D53eD52B70FcB769883810897B12"
+    ]
+  }
+}

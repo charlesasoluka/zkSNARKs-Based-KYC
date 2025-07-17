@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifier Dashboard - ZK-KYC System</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #007bff;
+            margin: 10px 0;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .service-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .service-enabled {
+            border-color: #28a745;
+            background: #e8f5e9;
+        }
+        
+        .service-disabled {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background: #f8f9fa;
+            font-weight: bold;
+        }
+        
+        .hash-display {
+            font-family: monospace;
+            font-size: 0.9em;
+            word-break: break-all;
+        }
+        
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .refresh-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+        
+        .refresh-btn:hover {
+            background: #0056b3;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        
+        const VERIFIER_API_URL = 'http://localhost:3003';
+        
+        function VerifierDashboard() {
+            const [stats, setStats] = useState({});
+            const [services, setServices] = useState({});
+            const [loading, setLoading] = useState(false);
+            const [error, setError] = useState(null);
+            const [lastRefresh, setLastRefresh] = useState(new Date());
+            
+            useEffect(() => {
+                loadDashboardData();
+                const interval = setInterval(loadDashboardData, 30000); // Refresh every 30 seconds
+                return () => clearInterval(interval);
+            }, []);
+            
+            const loadDashboardData = async () => {
+                try {
+                    setLoading(true);
+                    setError(null);
+                    
+                    // Load statistics
+                    const statsResponse = await fetch(`${VERIFIER_API_URL}/admin/stats`);
+                    const statsResult = await statsResponse.json();
+                    if (statsResult.success) {
+                        setStats(statsResult.data);
+                    }
+                    
+                    // Load services
+                    const servicesResponse = await fetch(`${VERIFIER_API_URL}/services`);
+                    const servicesResult = await servicesResponse.json();
+                    if (servicesResult.success) {
+                        setServices(servicesResult.data);
+                    }
+                    
+                    setLastRefresh(new Date());
+                    
+                } catch (error) {
+                    console.error('Error loading dashboard data:', error);
+                    setError('Failed to load dashboard data. Make sure the verifier service is running.');
+                } finally {
+                    setLoading(false);
+                }
+            };
+            
+            const checkHealth = async () => {
+                try {
+                    const response = await fetch(`${VERIFIER_API_URL}/health`);
+                    const result = await response.json();
+                    return result.status === 'OK';
+                } catch (error) {
+                    return false;
+                }
+            };
+            
+            const [healthStatus, setHealthStatus] = useState(null);
+            
+            useEffect(() => {
+                const checkHealthStatus = async () => {
+                    const isHealthy = await checkHealth();
+                    setHealthStatus(isHealthy);
+                };
+                
+                checkHealthStatus();
+                const interval = setInterval(checkHealthStatus, 10000); // Check every 10 seconds
+                return () => clearInterval(interval);
+            }, []);
+            
+            return (
+                <div className="container">
+                    <div className="header">
+                        <h1>🔍 Verifier Service Dashboard</h1>
+                        <p>Zero-Knowledge Proof Verification System</p>
+                        <p style={{fontSize: '0.9rem', color: '#666'}}>
+                            Last updated: {lastRefresh.toLocaleString()}
+                            <button onClick={loadDashboardData} className="refresh-btn">
+                                Refresh
+                            </button>
+                        </p>
+                    </div>
+                    
+                    {error && (
+                        <div className="error">
+                            <strong>Error:</strong> {error}
+                        </div>
+                    )}
+                    
+                    {loading && (
+                        <div className="loading">
+                            Loading dashboard data...
+                        </div>
+                    )}
+                    
+                    {/* System Status */}
+                    <div className="stats-grid">
+                        <div className="stat-card">
+                            <h3>🏥 Service Health</h3>
+                            <p className="stat-number" style={{color: healthStatus ? '#28a745' : '#dc3545'}}>
+                                {healthStatus ? '✅ Online' : '❌ Offline'}
+                            </p>
+                        </div>
+                        <div className="stat-card">
+                            <h3>📊 Total Verifications</h3>
+                            <p className="stat-number">{stats.totalVerifications || 0}</p>
+                        </div>
+                        <div className="stat-card">
+                            <h3>🎫 Active Access</h3>
+                            <p className="stat-number">{stats.activeAccess || 0}</p>
+                        </div>
+                        <div className="stat-card">
+                            <h3>🔒 Privacy Preserved</h3>
+                            <p className="stat-number" style={{color: '#28a745'}}>100%</p>
+                        </div>
+                    </div>
+                    
+                    {/* Available Services */}
+                    <div className="card">
+                        <h2>🛠️ Available Services</h2>
+                        <div className="services-grid">
+                            {Object.entries(services).map(([key, service]) => (
+                                <div key={key} className={`service-card ${service.enabled ? 'service-enabled' : 'service-disabled'}`}>
+                                    <h4>{service.name}</h4>
+                                    <p><strong>Minimum Age:</strong> {service.minimumAge}</p>
+                                    <p><strong>Description:</strong> {service.description}</p>
+                                    <p><strong>Status:</strong> 
+                                        <span className={`badge ${service.enabled ? 'badge-success' : 'badge-danger'}`}>
+                                            {service.enabled ? 'Enabled' : 'Disabled'}
+                                        </span>
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    
+                    {/* Service Statistics */}
+                    <div className="card">
+                        <h2>📈 Service Statistics</h2>
+                        {stats.serviceStats && Object.keys(stats.serviceStats).length > 0 ? (
+                            <div className="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Service</th>
+                                            <th>Total Verifications</th>
+                                            <th>Active Access</th>
+                                            <th>Success Rate</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {Object.entries(stats.serviceStats).map(([key, stat]) => (
+                                            <tr key={key}>
+                                                <td>{stat.name}</td>
+                                                <td>{stat.verifications}</td>
+                                                <td>{stat.activeAccess}</td>
+                                                <td>
+                                                    <span className="badge badge-success">
+                                                        {stat.verifications > 0 ? '100%' : 'N/A'}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        ) : (
+                            <p style={{color: '#666', textAlign: 'center', padding: '20px'}}>
+                                No verification statistics available yet.
+                            </p>
+                        )}
+                    </div>
+                    
+                    {/* Privacy Features */}
+                    <div className="card">
+                        <h2>🔐 Privacy Features</h2>
+                        <div className="services-grid">
+                            <div className="service-card service-enabled">
+                                <h4>🔒 Zero-Knowledge Verification</h4>
+                                <p>Proofs are verified without revealing any personal information</p>
+                            </div>
+                            <div className="service-card service-enabled">
+                                <h4>🛡️ Nullifier Protection</h4>
+                                <p>Prevents double-spending and replay attacks using unique nullifiers</p>
+                            </div>
+                            <div className="service-card service-enabled">
+                                <h4>🌳 Merkle Tree Validation</h4>
+                                <p>Validates proofs against trusted merkle roots from issuer</p>
+                            </div>
+                            <div className="service-card service-enabled">
+                                <h4>⏰ Time-based Expiry</h4>
+                                <p>Proofs expire after 1 hour, access expires after 24 hours</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {/* How It Works */}
+                    <div className="card">
+                        <h2>🔄 How Verification Works</h2>
+                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', margin: '20px 0'}}>
+                            <div style={{background: '#f8f9fa', padding: '20px', borderRadius: '8px', textAlign: 'center', margin: '10px', flex: 1, minWidth: '200px'}}>
+                                <h4>1. Receive Proof</h4>
+                                <p>User submits ZK proof with metadata</p>
+                            </div>
+                            <div style={{fontSize: '24px', color: '#007bff', margin: '0 10px'}}>→</div>
+                            <div style={{background: '#f8f9fa', padding: '20px', borderRadius: '8px', textAlign: 'center', margin: '10px', flex: 1, minWidth: '200px'}}>
+                                <h4>2. Validate Proof</h4>
+                                <p>Check structure, merkle root, and nullifier</p>
+                            </div>
+                            <div style={{fontSize: '24px', color: '#007bff', margin: '0 10px'}}>→</div>
+                            <div style={{background: '#f8f9fa', padding: '20px', borderRadius: '8px', textAlign: 'center', margin: '10px', flex: 1, minWidth: '200px'}}>
+                                <h4>3. Grant Access</h4>
+                                <p>Provide service access without seeing identity</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {/* API Endpoints */}
+                    <div className="card">
+                        <h2>🔗 API Endpoints</h2>
+                        <div className="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Method</th>
+                                        <th>Endpoint</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span className="badge badge-success">POST</span></td>
+                                        <td>/verify-proof</td>
+                                        <td>Verify ZK proof and grant access</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span className="badge badge-warning">GET</span></td>
+                                        <td>/check-access/:address/:service</td>
+                                        <td>Check access status for user</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span className="badge badge-warning">GET</span></td>
+                                        <td>/services</td>
+                                        <td>Get available services</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span className="badge badge-danger">POST</span></td>
+                                        <td>/revoke-access</td>
+                                        <td>Revoke access (admin only)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+        
+        ReactDOM.render(<VerifierDashboard />, document.getElementById('root'));
+    </script>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZK-KYC System - Three-Party Architecture</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .service-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .service-card h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .service-card p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: #0056b3;
+        }
+        
+        .btn-issuer {
+            background: #28a745;
+        }
+        
+        .btn-issuer:hover {
+            background: #1e7e34;
+        }
+        
+        .btn-verifier {
+            background: #dc3545;
+        }
+        
+        .btn-verifier:hover {
+            background: #c82333;
+        }
+        
+        .workflow {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+        
+        .workflow-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .step {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 10px;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .arrow {
+            font-size: 24px;
+            color: #007bff;
+            margin: 0 10px;
+        }
+        
+        .features {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .features ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .features li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .features li:last-child {
+            border-bottom: none;
+        }
+        
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 5px;
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔐 ZK-KYC System</h1>
+        <h2>Three-Party Privacy-Preserving Identity Verification</h2>
+        <p>Based on Tornado Cash architecture with Zero-Knowledge proofs</p>
+        <div class="status" id="status">
+            Checking system status...
+        </div>
+    </div>
+
+    <div class="services-grid">
+        <div class="service-card">
+            <h2>🏛️ Trusted Issuer</h2>
+            <p>Government or authority that issues verified DIDs and maintains the merkle tree</p>
+            <a href="trusted-issuer/frontend/index.html" class="btn btn-issuer">Open Issuer Dashboard</a>
+        </div>
+        
+        <div class="service-card">
+            <h2>👤 User Interface</h2>
+            <p>Request DID from trusted issuer and generate zero-knowledge proofs</p>
+            <a href="user-interface/index.html" class="btn">Open User Dashboard</a>
+        </div>
+        
+        <div class="service-card">
+            <h2>🔍 Verifier Service</h2>
+            <p>Validates proofs without seeing identity data and grants access to services</p>
+            <a href="verifier-service/frontend/index.html" class="btn btn-verifier">Open Verifier Dashboard</a>
+        </div>
+    </div>
+
+    <div class="workflow">
+        <h2>📋 System Workflow</h2>
+        <div class="workflow-steps">
+            <div class="step">
+                <h3>1. DID Issuance</h3>
+                <p>Trusted Issuer verifies identity and issues DID = hash(age, name, nationality, randomID)</p>
+            </div>
+            <div class="arrow">→</div>
+            <div class="step">
+                <h3>2. Proof Generation</h3>
+                <p>User generates ZK proof of age verification without revealing identity</p>
+            </div>
+            <div class="arrow">→</div>
+            <div class="step">
+                <h3>3. Proof Verification</h3>
+                <p>Verifier validates proof and grants access without seeing personal data</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="features">
+        <h2>🔒 Privacy Features</h2>
+        <ul>
+            <li>✅ <strong>Zero-Knowledge Proofs:</strong> Prove age without revealing personal information</li>
+            <li>✅ <strong>Merkle Tree Privacy:</strong> Identity commitment without exposure</li>
+            <li>✅ <strong>Nullifier Protection:</strong> Prevents double-spending and replay attacks</li>
+            <li>✅ <strong>Decentralized Verification:</strong> No central authority sees user data</li>
+            <li>✅ <strong>Tornado Cash Model:</strong> Battle-tested privacy architecture</li>
+            <li>✅ <strong>Smart Contract Integration:</strong> Blockchain-backed verification</li>
+        </ul>
+    </div>
+
+    <script>
+        // Check system status
+        async function checkStatus() {
+            try {
+                const response = await fetch('/health');
+                const data = await response.json();
+                
+                const statusEl = document.getElementById('status');
+                
+                if (data.mainApp === 'OK') {
+                    const trustedIssuerStatus = data.services[0].status === 'OK' ? '✅' : '❌';
+                    const verifierStatus = data.services[1].status === 'OK' ? '✅' : '❌';
+                    
+                    statusEl.innerHTML = `
+                        <strong>System Status:</strong><br>
+                        ${trustedIssuerStatus} Trusted Issuer Service<br>
+                        ${verifierStatus} Verifier Service<br>
+                        ✅ Main Application
+                    `;
+                    
+                    if (data.services[0].status === 'OK' && data.services[1].status === 'OK') {
+                        statusEl.style.background = '#d4edda';
+                        statusEl.style.color = '#155724';
+                    } else {
+                        statusEl.style.background = '#f8d7da';
+                        statusEl.style.color = '#721c24';
+                    }
+                } else {
+                    statusEl.innerHTML = '❌ System Error';
+                    statusEl.style.background = '#f8d7da';
+                    statusEl.style.color = '#721c24';
+                }
+            } catch (error) {
+                const statusEl = document.getElementById('status');
+                statusEl.innerHTML = '❌ Unable to connect to system';
+                statusEl.style.background = '#f8d7da';
+                statusEl.style.color = '#721c24';
+            }
+        }
+        
+        // Check status on load and every 10 seconds
+        checkStatus();
+        setInterval(checkStatus, 10000);
+    </script>
+</body>
+</html>
