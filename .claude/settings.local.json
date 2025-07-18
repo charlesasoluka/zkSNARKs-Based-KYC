@@ -7,7 +7,16 @@
       "Bash(curl:*)",
       "Bash(pkill:*)",
       "Bash(true)",
-      "Bash(npm start)"
+      "Bash(npm start)",
+      "Bash(npm test)",
+      "Bash(rm:*)",
+      "Bash(npm run demo:*)",
+      "Bash(npx hardhat:*)",
+      "Bash(snarkjs powersoftau:*)",
+      "Bash(ls:*)",
+      "Bash(snarkjs groth16 setup:*)",
+      "Bash(circom:*)",
+      "Bash(snarkjs zkey contribute:*)"
     ],
     "deny": []
   }

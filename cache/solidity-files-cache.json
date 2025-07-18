@@ -1,47 +1,6 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
-    "/home/uwe/zk_kyc_system/contracts/IdentityIssuer.sol": {
-      "lastModificationDate": 1752762237628,
-      "contentHash": "0866d2dc7a7a7c0986163117b8040f4c",
-      "sourceName": "contracts/IdentityIssuer.sol",
-      "solcConfig": {
-        "version": "0.8.20",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "@openzeppelin/contracts/access/Ownable.sol",
-        "@openzeppelin/contracts/utils/ReentrancyGuard.sol",
-        "@openzeppelin/contracts/utils/cryptography/ECDSA.sol",
-        "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "IdentityIssuer"
-      ]
-    },
     "/home/uwe/zk_kyc_system/node_modules/@openzeppelin/contracts/access/Ownable.sol": {
       "lastModificationDate": 1752243826728,
       "contentHash": "d3c790edc9ccf808a17c5a6cd13614fd",
@@ -415,85 +374,8 @@
         "Panic"
       ]
     },
-    "/home/uwe/zk_kyc_system/contracts/ZKAccessController.sol": {
-      "lastModificationDate": 1752762507404,
-      "contentHash": "a0e1a84159fbb60275288e294a99536a",
-      "sourceName": "contracts/ZKAccessController.sol",
-      "solcConfig": {
-        "version": "0.8.20",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "./KYCRegistry.sol",
-        "./Verifier.sol",
-        "@openzeppelin/contracts/access/Ownable.sol",
-        "@openzeppelin/contracts/utils/ReentrancyGuard.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "ZKAccessController"
-      ]
-    },
-    "/home/uwe/zk_kyc_system/contracts/Verifier.sol": {
-      "lastModificationDate": 1752762188676,
-      "contentHash": "76cb08cd0e465167a5d1e0e05a5ef9ef",
-      "sourceName": "contracts/Verifier.sol",
-      "solcConfig": {
-        "version": "0.8.20",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        ">=0.7.0 <0.9.0"
-      ],
-      "artifacts": [
-        "Verifier"
-      ]
-    },
     "/home/uwe/zk_kyc_system/contracts/KYCRegistry.sol": {
-      "lastModificationDate": 1752762217612,
+      "lastModificationDate": 1752848466184,
       "contentHash": "0b46f3b4fcee956f4308127b81fbfc90",
       "sourceName": "contracts/KYCRegistry.sol",
       "solcConfig": {
@@ -569,10 +451,193 @@
         "MerkleTreeWithHistory"
       ]
     },
-    "/home/uwe/zk_kyc_system/contracts/MockHasher.sol": {
-      "lastModificationDate": 1752762142552,
-      "contentHash": "f0f1d4f3d525fa5066968b5f74a714a4",
-      "sourceName": "contracts/MockHasher.sol",
+    "/home/uwe/zk_kyc_system/node_modules/poseidon-solidity/PoseidonT4.sol": {
+      "lastModificationDate": 1752847335148,
+      "contentHash": "5868876bb681d112060b46ee7e8b4939",
+      "sourceName": "poseidon-solidity/PoseidonT4.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.7.0"
+      ],
+      "artifacts": [
+        "PoseidonT4"
+      ]
+    },
+    "/home/uwe/zk_kyc_system/node_modules/poseidon-solidity/PoseidonT3.sol": {
+      "lastModificationDate": 1752847335148,
+      "contentHash": "88a3db6023abdf06f44823c05f81f69e",
+      "sourceName": "poseidon-solidity/PoseidonT3.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.7.0"
+      ],
+      "artifacts": [
+        "PoseidonT3"
+      ]
+    },
+    "/home/uwe/zk_kyc_system/contracts/Verifier.sol": {
+      "lastModificationDate": 1752858106180,
+      "contentHash": "76cb08cd0e465167a5d1e0e05a5ef9ef",
+      "sourceName": "contracts/Verifier.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.7.0 <0.9.0"
+      ],
+      "artifacts": [
+        "Verifier"
+      ]
+    },
+    "/home/uwe/zk_kyc_system/contracts/ZKAccessController.sol": {
+      "lastModificationDate": 1752858839419,
+      "contentHash": "795c97d61b91feb157654188cd716f58",
+      "sourceName": "contracts/ZKAccessController.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./KYCRegistry.sol",
+        "./ZKKYCVerifier.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "ZKAccessController"
+      ]
+    },
+    "/home/uwe/zk_kyc_system/contracts/ZKKYCVerifier.sol": {
+      "lastModificationDate": 1752858845231,
+      "contentHash": "92a93c3399f786c7d18d930c9138323b",
+      "sourceName": "contracts/ZKKYCVerifier.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.7.0 <0.9.0"
+      ],
+      "artifacts": [
+        "ZKKYCVerifier"
+      ]
+    },
+    "/home/uwe/zk_kyc_system/contracts/SimpleHasher.sol": {
+      "lastModificationDate": 1752858773563,
+      "contentHash": "6adb4f3a6c0a0cdfa099d9d307ddd06a",
+      "sourceName": "contracts/SimpleHasher.sol",
       "solcConfig": {
         "version": "0.8.20",
         "settings": {
@@ -604,43 +669,7 @@
         "^0.8.20"
       ],
       "artifacts": [
-        "MockHasher"
-      ]
-    },
-    "/home/uwe/zk_kyc_system/contracts/MockVerifier.sol": {
-      "lastModificationDate": 1752763144308,
-      "contentHash": "4e5766c589daaddb5a446e2b54e1d157",
-      "sourceName": "contracts/MockVerifier.sol",
-      "solcConfig": {
-        "version": "0.8.20",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "MockVerifier"
+        "SimpleHasher"
       ]
     }
   }
