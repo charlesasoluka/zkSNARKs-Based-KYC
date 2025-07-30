@@ -2,9 +2,9 @@
   "name": "zk_kyc_system",
   "version": "1.0.0",
   "description": "Zero-Knowledge KYC System - Tornado Cash Architecture for DID Issuance and Verification",
-  "main": "demo_final.js",
+  "main": "zkkyc_system.js",
   "scripts": {
-    "demo": "node demo_final.js",
+    "demo": "node zkkyc_system.js",
     "test": "npx hardhat test",
     "compile": "npx hardhat compile",
     "node": "npx hardhat node",
