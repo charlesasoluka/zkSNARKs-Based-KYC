@@ -7,6 +7,7 @@
     "demo": "node zkkyc_system.js",
     "test": "npx hardhat test",
     "compile": "npx hardhat compile",
+    "gas-analysis": "node gas_analysis.js",
     "node": "npx hardhat node",
     "clean": "npx hardhat clean"
   },

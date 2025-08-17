@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import "./KYCRegistry.sol";
-import "./ZKKYCVerifier.sol";
+import "./VerifierFinal.sol";
 
 /**
  * @title ZKAccessController
@@ -11,7 +11,7 @@ import "./ZKKYCVerifier.sol";
  */
 contract ZKAccessController {
     KYCRegistry public immutable kycRegistry;
-    ZKKYCVerifier public immutable verifier;
+    Groth16Verifier public immutable verifier;
     
     // Events
     event AccessGranted(address indexed user, bytes32 indexed nullifierHash, uint256 timestamp);
@@ -26,7 +26,7 @@ contract ZKAccessController {
     
     constructor(address _kycRegistry, address _verifier) {
         kycRegistry = KYCRegistry(_kycRegistry);
-        verifier = ZKKYCVerifier(_verifier);
+        verifier = Groth16Verifier(_verifier);
     }
     
     /**
@@ -72,9 +72,13 @@ contract ZKAccessController {
             revert UntrustedIssuer();
         }
         
-        // Verify the ZK proof
-        // Using temporary verification for demo purposes
-        bool isValidProof = _verifyProofTemp(_pA, _pB, _pC, _merkleRoot, _nullifierHash, _issuerAddress, _recipient);
+        // Verify the ZK proof with the actual public signals
+        // The circuit outputs: [merkleRoot, nullifierHash, recipient]
+        bool isValidProof = verifier.verifyProof(_pA, _pB, _pC, [
+            uint256(_merkleRoot),
+            uint256(_nullifierHash), 
+            uint256(uint160(_recipient))
+        ]);
         
         if (!isValidProof) {
             emit AccessDenied(msg.sender, "Invalid proof", block.timestamp);
@@ -89,21 +93,23 @@ contract ZKAccessController {
     }
     
     /**
-     * @dev Temporary proof verification function
-     * This will be replaced with the actual verifier once the new circuit is ready
+     * @dev Verify ZK proof with proper public inputs
+     * Currently simplified - in production should include merkle tree verification
      */
-    function _verifyProofTemp(
+    function _verifyZKProof(
         uint[2] calldata _pA,
         uint[2][2] calldata _pB,
         uint[2] calldata _pC,
         bytes32 _merkleRoot,
         bytes32 _nullifierHash,
-        address _issuerAddress,
         address _recipient
     ) internal view returns (bool) {
-        // For now, return true to test the flow
-        // This will be replaced with actual verification
-        return true;
+        // Circuit outputs [merkleRoot, nullifierHash, recipient]
+        return verifier.verifyProof(_pA, _pB, _pC, [
+            uint256(_merkleRoot),
+            uint256(_nullifierHash),
+            uint256(uint160(_recipient))
+        ]);
     }
     
     /**

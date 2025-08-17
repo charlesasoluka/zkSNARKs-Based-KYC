@@ -1,6 +1,82 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
+    "/home/uwe/zk_kyc_system/contracts/KYCRegistry.sol": {
+      "lastModificationDate": 1755442984140,
+      "contentHash": "bbaf7b7d5b5d4d29f941520f37cd6b9f",
+      "sourceName": "contracts/KYCRegistry.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./MerkleTreeWithHistory.sol",
+        "@openzeppelin/contracts/access/Ownable.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "KYCRegistry"
+      ]
+    },
+    "/home/uwe/zk_kyc_system/contracts/MerkleTreeWithHistory.sol": {
+      "lastModificationDate": 1752848466188,
+      "contentHash": "ff872f5a56427872b9402fad883beb17",
+      "sourceName": "contracts/MerkleTreeWithHistory.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "IHasher",
+        "MerkleTreeWithHistory"
+      ]
+    },
     "/home/uwe/zk_kyc_system/node_modules/@openzeppelin/contracts/access/Ownable.sol": {
       "lastModificationDate": 1752243826728,
       "contentHash": "d3c790edc9ccf808a17c5a6cd13614fd",
@@ -39,116 +115,6 @@
         "Ownable"
       ]
     },
-    "/home/uwe/zk_kyc_system/node_modules/@openzeppelin/contracts/utils/ReentrancyGuard.sol": {
-      "lastModificationDate": 1752243826732,
-      "contentHash": "190613e556d509d9e9a0ea43dc5d891d",
-      "sourceName": "@openzeppelin/contracts/utils/ReentrancyGuard.sol",
-      "solcConfig": {
-        "version": "0.8.20",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "ReentrancyGuard"
-      ]
-    },
-    "/home/uwe/zk_kyc_system/node_modules/@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol": {
-      "lastModificationDate": 1752243826728,
-      "contentHash": "260f3968eefa3bbd30520cff5384cd93",
-      "sourceName": "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol",
-      "solcConfig": {
-        "version": "0.8.20",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "../Strings.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "MessageHashUtils"
-      ]
-    },
-    "/home/uwe/zk_kyc_system/node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol": {
-      "lastModificationDate": 1752243826680,
-      "contentHash": "81de029d56aa803972be03c5d277cb6c",
-      "sourceName": "@openzeppelin/contracts/utils/cryptography/ECDSA.sol",
-      "solcConfig": {
-        "version": "0.8.20",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "ECDSA"
-      ]
-    },
     "/home/uwe/zk_kyc_system/node_modules/@openzeppelin/contracts/utils/Context.sol": {
       "lastModificationDate": 1752243826672,
       "contentHash": "67bfbc07588eb8683b3fd8f6f909563e",
@@ -185,383 +151,9 @@
         "Context"
       ]
     },
-    "/home/uwe/zk_kyc_system/node_modules/@openzeppelin/contracts/utils/Strings.sol": {
-      "lastModificationDate": 1752243826736,
-      "contentHash": "13dbc135f563c72a11b1cf4fbb5fb284",
-      "sourceName": "@openzeppelin/contracts/utils/Strings.sol",
-      "solcConfig": {
-        "version": "0.8.20",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "./math/Math.sol",
-        "./math/SafeCast.sol",
-        "./math/SignedMath.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "Strings"
-      ]
-    },
-    "/home/uwe/zk_kyc_system/node_modules/@openzeppelin/contracts/utils/math/Math.sol": {
-      "lastModificationDate": 1752243826728,
-      "contentHash": "5ec781e33d3a9ac91ffdc83d94420412",
-      "sourceName": "@openzeppelin/contracts/utils/math/Math.sol",
-      "solcConfig": {
-        "version": "0.8.20",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "../Panic.sol",
-        "./SafeCast.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "Math"
-      ]
-    },
-    "/home/uwe/zk_kyc_system/node_modules/@openzeppelin/contracts/utils/math/SignedMath.sol": {
-      "lastModificationDate": 1752243826736,
-      "contentHash": "ae3528afb8bdb0a7dcfba5b115ee8074",
-      "sourceName": "@openzeppelin/contracts/utils/math/SignedMath.sol",
-      "solcConfig": {
-        "version": "0.8.20",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "./SafeCast.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "SignedMath"
-      ]
-    },
-    "/home/uwe/zk_kyc_system/node_modules/@openzeppelin/contracts/utils/math/SafeCast.sol": {
-      "lastModificationDate": 1752243826732,
-      "contentHash": "2adca1150f58fc6f3d1f0a0f22ee7cca",
-      "sourceName": "@openzeppelin/contracts/utils/math/SafeCast.sol",
-      "solcConfig": {
-        "version": "0.8.20",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "SafeCast"
-      ]
-    },
-    "/home/uwe/zk_kyc_system/node_modules/@openzeppelin/contracts/utils/Panic.sol": {
-      "lastModificationDate": 1752243826732,
-      "contentHash": "2133dc13536b4a6a98131e431fac59e1",
-      "sourceName": "@openzeppelin/contracts/utils/Panic.sol",
-      "solcConfig": {
-        "version": "0.8.20",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "Panic"
-      ]
-    },
-    "/home/uwe/zk_kyc_system/contracts/KYCRegistry.sol": {
-      "lastModificationDate": 1752848466184,
-      "contentHash": "0b46f3b4fcee956f4308127b81fbfc90",
-      "sourceName": "contracts/KYCRegistry.sol",
-      "solcConfig": {
-        "version": "0.8.20",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "./MerkleTreeWithHistory.sol",
-        "./Verifier.sol",
-        "@openzeppelin/contracts/access/Ownable.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "KYCRegistry"
-      ]
-    },
-    "/home/uwe/zk_kyc_system/contracts/MerkleTreeWithHistory.sol": {
-      "lastModificationDate": 1752762721556,
-      "contentHash": "ff872f5a56427872b9402fad883beb17",
-      "sourceName": "contracts/MerkleTreeWithHistory.sol",
-      "solcConfig": {
-        "version": "0.8.20",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "IHasher",
-        "MerkleTreeWithHistory"
-      ]
-    },
-    "/home/uwe/zk_kyc_system/node_modules/poseidon-solidity/PoseidonT4.sol": {
-      "lastModificationDate": 1752847335148,
-      "contentHash": "5868876bb681d112060b46ee7e8b4939",
-      "sourceName": "poseidon-solidity/PoseidonT4.sol",
-      "solcConfig": {
-        "version": "0.8.20",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        ">=0.7.0"
-      ],
-      "artifacts": [
-        "PoseidonT4"
-      ]
-    },
-    "/home/uwe/zk_kyc_system/node_modules/poseidon-solidity/PoseidonT3.sol": {
-      "lastModificationDate": 1752847335148,
-      "contentHash": "88a3db6023abdf06f44823c05f81f69e",
-      "sourceName": "poseidon-solidity/PoseidonT3.sol",
-      "solcConfig": {
-        "version": "0.8.20",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        ">=0.7.0"
-      ],
-      "artifacts": [
-        "PoseidonT3"
-      ]
-    },
-    "/home/uwe/zk_kyc_system/contracts/Verifier.sol": {
-      "lastModificationDate": 1752858106180,
-      "contentHash": "76cb08cd0e465167a5d1e0e05a5ef9ef",
-      "sourceName": "contracts/Verifier.sol",
-      "solcConfig": {
-        "version": "0.8.20",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        ">=0.7.0 <0.9.0"
-      ],
-      "artifacts": [
-        "Verifier"
-      ]
-    },
     "/home/uwe/zk_kyc_system/contracts/ZKAccessController.sol": {
-      "lastModificationDate": 1752858839419,
-      "contentHash": "795c97d61b91feb157654188cd716f58",
+      "lastModificationDate": 1755444095020,
+      "contentHash": "e83188edd340cf0ceb035ba0aec241a0",
       "sourceName": "contracts/ZKAccessController.sol",
       "solcConfig": {
         "version": "0.8.20",
@@ -589,7 +181,7 @@
       },
       "imports": [
         "./KYCRegistry.sol",
-        "./ZKKYCVerifier.sol"
+        "./VerifierFinal.sol"
       ],
       "versionPragmas": [
         "^0.8.20"
@@ -598,10 +190,10 @@
         "ZKAccessController"
       ]
     },
-    "/home/uwe/zk_kyc_system/contracts/ZKKYCVerifier.sol": {
-      "lastModificationDate": 1752858845231,
-      "contentHash": "92a93c3399f786c7d18d930c9138323b",
-      "sourceName": "contracts/ZKKYCVerifier.sol",
+    "/home/uwe/zk_kyc_system/contracts/VerifierFinal.sol": {
+      "lastModificationDate": 1755443978336,
+      "contentHash": "f1328b7c767b96aa7d1a09002c3580e6",
+      "sourceName": "contracts/VerifierFinal.sol",
       "solcConfig": {
         "version": "0.8.20",
         "settings": {
@@ -631,7 +223,7 @@
         ">=0.7.0 <0.9.0"
       ],
       "artifacts": [
-        "ZKKYCVerifier"
+        "Groth16Verifier"
       ]
     },
     "/home/uwe/zk_kyc_system/contracts/SimpleHasher.sol": {

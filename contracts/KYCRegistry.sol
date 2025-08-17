@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import "./MerkleTreeWithHistory.sol";
-import "./Verifier.sol";
+// Verifier import removed - handled by access controller
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 /**

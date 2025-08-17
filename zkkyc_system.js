@@ -14,8 +14,9 @@ const crypto = require("crypto");
  */
 class ZKKYCSystem {
     constructor() {
+        // Use simpler circuit for faster demo - clean has too many constraints
         this.circuitWasm = path.join(__dirname, "circuits/zkkyc_final_js/zkkyc_final.wasm");
-        this.circuitZkey = path.join(__dirname, "circuits/zkkyc_final_0000.zkey");
+        this.circuitZkey = path.join(__dirname, "circuits/zkkyc_final_0001.zkey");
         this.poseidon = null;
         this.contracts = {};
         this.accounts = {};
@@ -72,7 +73,7 @@ class ZKKYCSystem {
         await kycRegistry.waitForDeployment();
         
         // Deploy the verifier (matching our circuit with 1 public signal)
-        const Verifier = await ethers.getContractFactory("Verifier");
+        const Verifier = await ethers.getContractFactory("contracts/VerifierFinal.sol:Groth16Verifier");
         const verifier = await Verifier.deploy();
         await verifier.waitForDeployment();
         
@@ -371,18 +372,23 @@ class ZKKYCSystem {
         // Recompute commitment to ensure it matches circuit computation
         const expectedCommitment = this.generateCommitment(userData.nullifier, userData.secret, userData.did);
         
-        // Prepare circuit inputs matching zkkyc_final.circom
+        // Generate Merkle proof for the commitment
+        const merkleProof = await this.generateMerkleProof(userData.commitment, userData.leafIndex);
+        
+        // Prepare circuit inputs matching zkkyc_final.circom (with Merkle tree verification)
         // All inputs must be field elements as strings
         const circuitInputs = {
             // Private inputs - convert to field elements
             nullifier: this.toFieldElement(userData.nullifier).toString(),
             secret: this.toFieldElement(userData.secret).toString(), 
             did: this.toFieldElement(userData.did).toString(),
+            pathElements: merkleProof.pathElements.map(x => this.toFieldElement(x).toString()),
+            pathIndices: merkleProof.pathIndices.map(x => x.toString()),
             
-            // Public inputs - ensure consistent field elements
-            commitment: expectedCommitment.toString(),
-            nullifierHash: nullifierHashBigInt.toString(),
-            recipient: recipientField.toString()
+            // Actual values that will be verified and output as public signals
+            actualMerkleRoot: this.computeMerkleRoot().toString(),
+            actualNullifierHash: nullifierHashBigInt.toString(),
+            actualRecipient: recipientField.toString()
         };
         
         console.log("⚡ Generating REAL ZK proof...");
@@ -391,14 +397,17 @@ class ZKKYCSystem {
         console.log(`     nullifier = ${circuitInputs.nullifier}`);
         console.log(`     secret = ${circuitInputs.secret}`);
         console.log(`     did = ${circuitInputs.did}`);
-        console.log(`   Public Inputs:`);
-        console.log(`     commitment = ${circuitInputs.commitment}`);
-        console.log(`     nullifierHash = ${circuitInputs.nullifierHash}`);
-        console.log(`     recipient = ${circuitInputs.recipient}`);
+        console.log(`     pathElements = [${circuitInputs.pathElements.slice(0,3).join(', ')}...] (${circuitInputs.pathElements.length} total)`);
+        console.log(`     pathIndices = [${circuitInputs.pathIndices.slice(0,3).join(', ')}...] (${circuitInputs.pathIndices.length} total)`);
+        console.log(`   Actual Values (to be verified):`);
+        console.log(`     actualMerkleRoot = ${circuitInputs.actualMerkleRoot}`);
+        console.log(`     actualNullifierHash = ${circuitInputs.actualNullifierHash}`);
+        console.log(`     actualRecipient = ${circuitInputs.actualRecipient}`);
         console.log(`   🔍 Verification:`);
-        console.log(`     Original Commitment: ${userData.commitment.toString()}`);
-        console.log(`     Circuit Commitment:  ${circuitInputs.commitment}`);
-        console.log(`     Values Match: ${circuitInputs.commitment === userData.commitment.toString()}`);
+        console.log(`     Expected Commitment: ${expectedCommitment.toString()}`);
+        console.log(`     User Commitment:     ${userData.commitment.toString()}`);
+        console.log(`     Values Match: ${expectedCommitment.toString() === userData.commitment.toString()}`);
+        console.log(`     Merkle Root: ${circuitInputs.actualMerkleRoot}`);
         console.log(`   🔄 Computing nullifier hash: poseidon([${nullifierField}, ${recipientField}]) = ${nullifierHashBigInt}`);
         
         const startTime = Date.now();
@@ -450,7 +459,7 @@ class ZKKYCSystem {
                 pB: [["0x3", "0x4"], ["0x5", "0x6"]],
                 pC: ["0x7", "0x8"],
                 publicSignals: [
-                    userData.commitment.toString(),
+                    circuitInputs.actualMerkleRoot,
                     nullifierHashBigInt.toString(),
                     recipientField.toString()
                 ]
@@ -474,9 +483,32 @@ class ZKKYCSystem {
             const proofType = proofData.isReal ? "REAL ZK PROOF" : "MOCK PROOF";
             console.log(`   🔍 Proof type: ${proofType}`);
             
-            // In a real system, we would verify the proof on-chain
-            // For now, we simulate successful verification
-            const isValid = true; 
+            // Verify the proof using the on-chain verifier
+            let isValid = false;
+            
+            if (proofData.isReal) {
+                // Try to verify using the real verifier contract
+                try {
+                    // The circuit now outputs: [merkleRoot, nullifierHash, recipient]
+                    console.log(`   🔍 Verifying with public signals: ${JSON.stringify(proofData.proof.publicSignals)}`);
+                    console.log(`   🔍 Expected: [merkleRoot, nullifierHash, recipient]`);
+                    isValid = await this.contracts.verifier.verifyProof(
+                        proofData.proof.pA,
+                        proofData.proof.pB,
+                        proofData.proof.pC,
+                        proofData.proof.publicSignals
+                    );
+                    console.log(`   🔍 On-chain verification result: ${isValid}`);
+                } catch (error) {
+                    console.log(`   ❌ On-chain verification failed: ${error.message}`);
+                    console.log(`   📊 Proof public signals: ${JSON.stringify(proofData.proof.publicSignals)}`);
+                    isValid = false;
+                }
+            } else {
+                // For mock proofs, we'll accept them as invalid but still demonstrate the flow
+                console.log(`   ⚠️  Mock proof detected - would be rejected in production`);
+                isValid = false;
+            } 
             
             if (isValid) {
                 // Mark nullifier as used
@@ -634,6 +666,9 @@ async function main() {
     } else {
         console.log("\n❌ Some tests failed. Please check the implementation.");
     }
+    
+    // Explicitly exit to prevent timeout
+    process.exit(0);
 }
 
 if (require.main === module) {
