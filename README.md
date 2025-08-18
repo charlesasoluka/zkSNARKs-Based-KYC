@@ -1,39 +1,41 @@
-# ZK KYC System - Tornado Cash Architecture
+# ZK KYC System - Privacy-Preserving Identity Verification
 
-A privacy-preserving identity verification system demonstrating how a **trusted issuer** can issue a **DID (verified credential + wallet ID)** to a **user**, who can then access resources (like voting) by generating a **zero-knowledge proof** that can be verified without revealing identity details.
+A complete zero-knowledge proof system for privacy-preserving identity verification using **Tornado Cash architecture**. This system demonstrates how users can prove their eligibility for services (like voting or access control) without revealing their actual identity, using cryptographic commitments and zero-knowledge proofs.
 
 ## 🏗️ Architecture
 
-Built around **Tornado Cash** principles with:
-- **Nullifier schemes** for preventing double-spending/voting
-- **Merkle trees** for efficient batch verification
-- **Circom circuits** for zero-knowledge proof generation
-- **Smart contracts** for on-chain verification
+Built on proven **Tornado Cash** principles with:
+- **Zero-knowledge proofs** for privacy-preserving verification
+- **Nullifier schemes** for preventing double-spending and replay attacks
+- **Merkle trees** for efficient commitment storage and batch verification
+- **Circom circuits** for generating cryptographic proofs
+- **Smart contracts** for on-chain proof verification
 
 ## 🔄 Core Flow
 
-1. **Trusted Issuer** issues a DID credential to a user
-2. **User** generates a commitment and deposits it to the Merkle tree registry
-3. **User** generates a ZK proof to access voting without revealing identity
-4. **Verifier** validates the proof and grants access
+1. **Trusted Issuers** register as authorized credential providers
+2. **Users** generate secrets (nullifier + secret) and receive DIDs from issuers
+3. **Commitments** are generated and stored in a Merkle tree registry
+4. **Users** generate ZK proofs to access protected resources without revealing identity
+5. **Smart contracts** verify proofs on-chain and grant/deny access
 
 ## 📦 Essential Components
 
 ### Smart Contracts
-- `KYCRegistry.sol` - Merkle tree registry for identity commitments
-- `DIDIssuer.sol` - Simple DID credential issuance
-- `ZKVoting.sol` - Voting system requiring ZK proofs
-- `Verifier.sol` - ZK proof verification
-- `MockHasher.sol` - Poseidon hash implementation
+- `KYCRegistry.sol` - Merkle tree registry for storing identity commitments
+- `ZKAccessController.sol` - Access control system using ZK proofs
+- `MerkleTreeWithHistory.sol` - Merkle tree implementation with history
+- `VerifierFinal.sol` - Groth16 ZK proof verification contract
+- `SimpleHasher.sol` - Poseidon hash implementation for Merkle operations
 
-### Circuits
-- `zkkyc.circom` - Main ZK circuit for identity and age verification
-- `circomlib/` - Circuit libraries for cryptographic primitives
+### ZK Circuits
+- `zkkyc_final.circom` - Main ZK circuit for identity verification with Merkle proofs
+- `circomlib/` - Complete circuit library with cryptographic primitives
+- Pre-generated circuit artifacts (`.wasm`, `.zkey`, `.r1cs`)
 
-### Scripts
-- `demo.js` - Complete end-to-end demonstration
-- `generate-proof.js` - ZK proof generation utilities
-- `deploy-simple.js` - Contract deployment
+### Core System
+- `zkkyc_system.js` - Complete end-to-end ZK KYC demonstration system
+- `gas_analysis.js` - Gas usage analysis for smart contract operations
 
 ## 🚀 Quick Start
 
@@ -44,91 +46,126 @@ npm install
 # Compile contracts and circuits
 npm run compile
 
-# Run the complete demo
+# Run the complete ZK KYC demonstration
 npm run demo
 
-# Or run individual components
-npm test                    # Run contract tests
-npm run generate-proof      # Test ZK proof generation
+# Alternative commands
+npm test                    # Run contract tests (if available)
+npm run gas-analysis        # Analyze gas usage
+npm run clean              # Clean build artifacts
 ```
 
-## 🔍 Demo Script
+## 🔍 Complete Demo
 
-The `demo.js` script demonstrates the complete flow:
+The main demonstration script shows the entire ZK KYC flow:
 
 ```bash
-node demo.js
+npm run demo
+# or directly: node zkkyc_system.js
 ```
 
-This will:
-1. Deploy all contracts
-2. Generate user secrets (nullifier + secret)
-3. Issue a DID credential
-4. Deposit commitment to Merkle tree
-5. Generate ZK proof for voting
-6. Attempt to cast a vote
-7. Show privacy preservation and security features
+This comprehensive demo will:
+1. **Initialize the system** and deploy all smart contracts
+2. **Register multiple users** with different trusted issuers
+3. **Generate cryptographic commitments** and add them to Merkle tree
+4. **Create zero-knowledge proofs** for each user without revealing identity
+5. **Verify proofs on-chain** and demonstrate access control
+6. **Test security features** including replay attack prevention
+7. **Show complete privacy preservation** throughout the process
 
-## 🧪 Testing
+## 🧪 Testing & Analysis
 
 ```bash
-# Run all tests
+# Run all tests (if test files exist)
 npm test
 
-# Test proof generation
-npm run generate-proof
+# Analyze gas consumption of smart contracts
+npm run gas-analysis
+
+# Clean all build artifacts
+npm run clean
 ```
 
-## 🔐 Privacy Features
+## 🔐 Privacy & Security Features
 
-- **Zero-Knowledge Proofs**: Prove eligibility without revealing identity
-- **Nullifier Schemes**: Prevent double-voting while maintaining privacy
-- **Merkle Tree Privacy**: Batch verification without exposing individual commitments
-- **Tornado Cash Security**: Battle-tested privacy architecture
+- **Zero-Knowledge Proofs**: Users prove eligibility without revealing actual identity or credentials
+- **Nullifier Schemes**: Prevent replay attacks and double-spending while maintaining anonymity
+- **Merkle Tree Privacy**: Efficient batch verification without exposing individual user commitments
+- **Cryptographic Commitments**: Bind users to their credentials without revealing sensitive information
+- **Poseidon Hashing**: Optimized for zk-SNARK circuits, providing secure and efficient cryptographic operations
+- **Groth16 Proofs**: State-of-the-art zk-SNARK implementation for minimal proof size and fast verification
 
 ## 📂 Project Structure
 
 ```
 zk_kyc_system/
-├── contracts/               # Smart contracts
-│   ├── KYCRegistry.sol     # Merkle tree registry
-│   ├── DIDIssuer.sol       # DID credential issuer
-│   ├── ZKVoting.sol        # Voting with ZK proofs
-│   └── Verifier.sol        # ZK proof verifier
-├── circuits/               # ZK circuits
-│   ├── zkkyc.circom        # Main circuit
-│   └── circomlib/          # Circuit libraries
-├── scripts/                # Utilities
-│   ├── deploy-simple.js    # Contract deployment
-│   ├── generate-proof.js   # Proof generation
-│   └── merkle-utils.js     # Merkle tree utilities
-├── test/                   # Test files
-├── demo.js                 # Complete demo
-└── README.md              # This file
+├── contracts/                    # Smart contracts
+│   ├── KYCRegistry.sol          # Merkle tree registry for commitments
+│   ├── ZKAccessController.sol   # Access control using ZK proofs
+│   ├── MerkleTreeWithHistory.sol # Merkle tree with historical tracking
+│   ├── VerifierFinal.sol        # Groth16 proof verification
+│   └── SimpleHasher.sol         # Poseidon hasher implementation
+├── circuits/                    # Zero-knowledge circuits
+│   ├── zkkyc_final.circom       # Main ZK circuit
+│   ├── circomlib/               # Comprehensive circuit library
+│   ├── zkkyc_final.wasm         # Compiled circuit (WebAssembly)
+│   ├── zkkyc_final_0001.zkey    # Circuit proving key
+│   ├── verification_key_final.json # Verification key
+│   └── pot15_final.ptau         # Powers of tau ceremony file
+├── artifacts/                   # Compiled contract artifacts
+├── cache/                       # Build cache
+├── zkkyc_system.js             # Complete demonstration system
+├── gas_analysis.js             # Gas usage analysis
+├── hardhat.config.js           # Hardhat configuration
+├── package.json                # NPM dependencies and scripts
+└── README.md                   # This documentation
 ```
 
-## 🎯 Key Demonstration
+## 🎯 Key Features Demonstrated
 
-This system demonstrates:
-- **Privacy-preserving identity verification**
-- **Secure voting without identity revelation**
-- **Nullifier-based double-spending prevention**
-- **Efficient batch verification using Merkle trees**
-- **Zero-knowledge proof generation and verification**
+This complete ZK KYC system demonstrates:
 
-The architecture ensures that:
-- Users can prove eligibility without revealing identity
-- Verifiers can validate proofs without accessing personal data
-- The system prevents double-voting while maintaining privacy
-- All operations are cryptographically secure and verifiable
+### Core Functionality
+- **Privacy-preserving identity verification** using zero-knowledge proofs
+- **Secure access control** without revealing personal information
+- **Cryptographic commitment schemes** binding users to credentials
+- **Merkle tree-based batch verification** for scalability
+- **Real zk-SNARK proof generation** using Circom and snarkjs
 
-## 🔧 Requirements
+### Security Features  
+- **Nullifier-based replay attack prevention** 
+- **Double-spending protection** while maintaining anonymity
+- **Trusted issuer verification** with multi-issuer support
+- **On-chain proof verification** using Groth16 verifiers
+- **Cryptographically secure** operations throughout
 
-- Node.js 16+
-- Hardhat
-- Circom & snarkjs
-- Modern terminal for demo output
+### Privacy Guarantees
+- Users prove eligibility **without revealing identity**
+- Verifiers validate proofs **without accessing personal data**  
+- System prevents abuse **while maintaining complete privacy**
+- All operations are **cryptographically verifiable** and **mathematically sound**
 
-## 🎉 Usage
+## 🔧 Technical Requirements
 
-Simply run `npm run demo` to see the complete ZK KYC system in action without any frontend dependencies.
+- **Node.js 16+** for running the JavaScript environment
+- **NPM packages** automatically installed via `npm install`
+- **Hardhat** for smart contract compilation and testing
+- **Circom & snarkjs** for zero-knowledge circuit operations (included)
+- **Modern terminal** with good Unicode support for optimal demo output
+
+## 🎉 Getting Started
+
+Experience the complete ZK KYC system with a single command:
+
+```bash
+npm run demo
+```
+
+This runs the comprehensive `zkkyc_system.js` demonstration showing:
+- Complete end-to-end privacy-preserving verification
+- Real zero-knowledge proof generation and verification  
+- Multi-user scenarios with different trusted issuers
+- Security features including replay attack prevention
+- Detailed logging of all cryptographic operations
+
+**No frontend required** - the entire system runs in the terminal with detailed explanations of each step.
