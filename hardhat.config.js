@@ -9,12 +9,16 @@ module.exports = {
       optimizer: {
         enabled: true,
         runs: 200
-      }
+      },
+      viaIR: true
     }
   },
   networks: {
     hardhat: {
-      chainId: 1337
+      chainId: 1337,
+      accounts: {
+        count: 110 // 1 deployer + 5 issuers + 100 users + extra for safety
+      }
     },
     localhost: {
       url: "http://127.0.0.1:8545"

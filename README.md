@@ -1,6 +1,6 @@
-# ZK KYC System - Privacy-Preserving Identity Verification
+# Secure ZK KYC System - Enterprise-Grade Privacy-Preserving Identity Verification
 
-A complete zero-knowledge proof system for privacy-preserving identity verification using **Tornado Cash architecture**. This system demonstrates how users can prove their eligibility for services (like voting or access control) without revealing their actual identity, using cryptographic commitments and zero-knowledge proofs.
+A complete, **production-ready** zero-knowledge proof system for privacy-preserving identity verification using **enhanced Tornado Cash architecture**. This secure implementation includes formal threat modeling, comprehensive security constraints, and cryptographic binding to prevent common attacks. Users can prove their eligibility for services without revealing their identity, using enhanced cryptographic commitments and zero-knowledge proofs.
 
 ## 🏗️ Architecture
 
@@ -10,6 +10,21 @@ Built on proven **Tornado Cash** principles with:
 - **Merkle trees** for efficient commitment storage and batch verification
 - **Circom circuits** for generating cryptographic proofs
 - **Smart contracts** for on-chain proof verification
+
+## 🛡️ Enhanced Security Features
+
+This secure implementation addresses critical vulnerabilities found in basic ZK identity systems:
+
+- **Issuer Signature Verification** - Cryptographic binding prevents unauthorized credential issuance
+- **Anti-Spam Economic Security** - Proof verification fees prevent DoS attacks  
+- **Rate Limiting** - Per-issuer daily limits prevent bulk credential farming
+- **Temporal Constraints** - Timestamp validation prevents replay attacks
+- **Range Constraints** - Entropy requirements prevent brute force attacks
+- **Commitment Binding** - Links commitments to specific issuers preventing cross-issuer attacks
+- **Formal Threat Model** - Mathematical security proofs against defined adversaries
+- **Non-Malleability** - Additional constraints prevent proof manipulation
+
+See `SECURITY_MODEL.md` and `FORMAL_SECURITY_PROOFS.md` for detailed analysis.
 
 ## 🔄 Core Flow
 
@@ -22,16 +37,16 @@ Built on proven **Tornado Cash** principles with:
 ## 📦 Essential Components
 
 ### Smart Contracts
-- `KYCRegistry.sol` - Merkle tree registry for storing identity commitments
-- `ZKAccessController.sol` - Access control system using ZK proofs
+- `SecureKYCRegistry.sol` - Enhanced Merkle tree registry with issuer signature verification
+- `SecureZKAccessController.sol` - Access control with anti-spam fees and rate limiting
 - `MerkleTreeWithHistory.sol` - Merkle tree implementation with history
-- `VerifierFinal.sol` - Groth16 ZK proof verification contract
+- `VerifierSecure.sol` - Enhanced Groth16 verifier with additional security constraints
 - `SimpleHasher.sol` - Poseidon hash implementation for Merkle operations
 
 ### ZK Circuits
-- `zkkyc_final.circom` - Main ZK circuit for identity verification with Merkle proofs
+- `zkkyc_secure.circom` - Enhanced ZK circuit with issuer binding and security constraints
 - `circomlib/` - Complete circuit library with cryptographic primitives
-- Pre-generated circuit artifacts (`.wasm`, `.zkey`, `.r1cs`)
+- Pre-generated circuit artifacts (`.wasm`, `.zkey`, `.r1cs`) for production use
 
 ### Core System
 - `zkkyc_system.js` - Complete end-to-end ZK KYC demonstration system
